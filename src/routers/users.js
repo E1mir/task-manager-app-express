@@ -1,7 +1,8 @@
 const express = require('express')
+const fs = require('fs')
+
 const userController = require('../controllers/userController')
 const fileController = require('../controllers/fileController')
-
 const {
   getBytes,
   createFileFilter
@@ -14,6 +15,12 @@ const {sendSs} = require("../emails/account");
 
 
 const router = express.Router()
+
+const destinationFolder = 'uploads/images/avatars';
+
+if (!fs.existsSync(destinationFolder)) {
+  fs.mkdirSync(destinationFolder, { recursive: true });
+}
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
