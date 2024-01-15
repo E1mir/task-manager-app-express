@@ -101,6 +101,11 @@ const updateProfileUser = async (req, res) => {
 const deleteProfileUser = async (req, res) => {
   try {
     await req.user.deleteOne()
+
+    if (req.user.avatar) {
+      await fs.promises.unlink(req.user.avatar);
+    }
+
     await sendCancellationEmail(req.user.email, req.user.name)
     res.send(req.user)
   } catch (e) {
@@ -131,7 +136,7 @@ const deleteProfileAvatar = async (req, res) => {
     const user = req.user;
 
     if (!user.avatar) {
-      return res.status(404).send({ error: 'No avatar found.' });
+      return res.status(404).send({error: 'No avatar found.'});
     }
 
     await fs.promises.unlink(user.avatar);
@@ -140,10 +145,10 @@ const deleteProfileAvatar = async (req, res) => {
 
     await user.save();
 
-    res.status(200).send({ message: 'Avatar deleted successfully.' });
+    res.status(200).send({message: 'Avatar deleted successfully.'});
   } catch (error) {
     console.error(error);
-    res.status(500).send({ error: 'Internal Server Error.' });
+    res.status(500).send({error: 'Internal Server Error.'});
   }
 }
 
